@@ -1,0 +1,134 @@
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 30px;
+  background: #f3f4f6;
+  color: #333;
+}
+
+h2 {
+  text-align: center;
+  color: #1d4ed8;
+  margin-bottom: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+label {
+  font-weight: 600;
+  margin-top: 15px;
+  display: block;
+}
+
+textarea, input[type="number"], input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 15px;
+  border: none;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+button i {
+  margin-right: 6px;
+}
+
+button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.output {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e0f2fe;
+  border-left: 5px solid #0284c7;
+  font-weight: bold;
+  border-radius: 6px;
+  min-height: 20px;
+}
+
+.chart-container {
+  margin-top: 30px;
+  position: relative;
+  height: 400px;
+}
+
+canvas {
+  width: 100% !important;
+  max-width: 700px;
+  margin: auto;
+}
+
+.error {
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-left: 5px solid #dc2626;
+}
+
+.history-container {
+  margin-top: 30px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 20px;
+}
+
+.history-item {
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-left: 4px solid #2563eb;
+}
+
+.history-item h4 {
+  margin: 0 0 10px 0;
+  color: #1e40af;
+}
+
+.history-item p {
+  margin: 5px 0;
+}
+
+.history-item .time {
+  font-size: 0.8em;
+  color: #6b7280;
+}
+
+.clear-history {
+  background-color: #ef4444;
+}
+
+.clear-history:hover {
+  background-color: #dc2626;
+}

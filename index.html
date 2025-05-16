@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interpolasi Stirling - Hitung Suhu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2><i class="fas fa-temperature-high"></i> Interpolasi Stirling - Hitung Suhu</h2>
+
+    <div id="inputSection">
+      <label><i class="fas fa-keyboard"></i> Masukkan data manual (format: x,y per baris):</label>
+      <textarea id="dataInput" rows="6" placeholder="Contoh:
+1,15
+2,18
+3,21
+4,24
+5,27"></textarea>
+
+      <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
+      <input type="file" id="csvFile" accept=".csv" />
+
+      <label><i class="fas fa-crosshairs"></i> Nilai X yang ingin diinterpolasi:</label>
+      <input type="number" id="xInput" step="any" />
+
+      <div class="button-group">
+        <button id="hitungBtn"><i class="fas fa-calculator"></i> Hitung</button>
+        <button id="hitungBaruBtn" style="display: none;"><i class="fas fa-plus"></i> Hitung Baru</button>
+        <button id="unduhHasilBtn" disabled><i class="fas fa-download"></i> Unduh Hasil</button>
+        <button id="unduhGrafikBtn" disabled><i class="fas fa-image"></i> Unduh Grafik</button>
+      </div>
+
+      <div class="output" id="hasilOutput">Hasil akan ditampilkan di sini...</div>
+
+      <div class="chart-container">
+        <canvas id="chartCanvas"></canvas>
+      </div>
+    </div>
+
+    <div class="history-container" id="historySection">
+      <h3><i class="fas fa-history"></i> Riwayat Perhitungan</h3>
+      <div id="historyList"></div>
+      <button class="clear-history" id="clearHistoryBtn"><i class="fas fa-trash"></i> Hapus Riwayat</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/history.js"></script>
+  <script src="assets/js/chart.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
