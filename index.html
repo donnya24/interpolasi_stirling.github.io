@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aplikasi Interpolasi Stirling</title>
+    <title>Sistem Interpolasi Stirling Multi-Fungsi</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -13,199 +12,1904 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        min-height: 100vh;
+      }
+
+      .mobile-nav-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 15px 15px;
+        z-index: 999;
+      }
+
+      .mobile-nav-menu.active {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .mobile-nav-menu .nav-item {
+        display: block;
+        width: 100%;
+        padding: 15px 20px;
+        margin: 0;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        transition: all 0.3s ease;
+      }
+
+      .mobile-nav-menu .nav-item:last-child {
+        border-bottom: none;
+      }
+
+      .mobile-nav-menu .nav-item:hover,
+      .mobile-nav-menu .nav-item.active {
+        background: #1d4ed8;
+        color: white;
+        transform: none;
+      }
+
+      .mobile-nav-menu .nav-item i {
+        margin-right: 10px;
+        width: 20px;
+      }
+
+      .navbar {
+        position: relative;
+      }
+
+      @media (max-width: 768px) {
+        .nav-container {
+          position: relative;
+        }
+        .mobile-menu {
+          display: block;
+          background: none;
+          border: none;
+          font-size: 1.5em;
+          color: #1d4ed8;
+          cursor: pointer;
+          padding: 5px;
+          transition: transform 0.3s ease;
+        }
+
+        .mobile-menu.active {
+          transform: rotate(90deg);
+        }
+
+        .nav-menu {
+          display: none;
+        }
+      }
+      .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 0;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+      }
+
+      .logo {
+        font-size: 1.5em;
+        font-weight: 600;
+        color: #1d4ed8;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-item {
+        cursor: pointer;
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: #1d4ed8;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        text-align: center;
+        color: #1d4ed8;
+        margin-bottom: 30px;
+        font-size: 2em;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .feature-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .feature-card i {
+        font-size: 3em;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .feature-card h3 {
+        margin: 15px 0;
+        font-size: 1.5em;
+      }
+
+      label {
+        font-weight: 600;
+        margin-top: 15px;
+        display: block;
+        color: #374151;
+      }
+
+      textarea,
+      input[type="number"],
+      input[type="file"],
+      select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 8px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+
+      textarea:focus,
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #1d4ed8;
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+      }
+
+      button {
+        margin-top: 15px;
+        padding: 12px 20px;
+        border: none;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      }
+
+      button:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .output {
+        margin-top: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, #e0f2fe, #b3e5fc);
+        border-left: 5px solid #0284c7;
+        font-weight: bold;
+        border-radius: 10px;
+        min-height: 20px;
+        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2);
+      }
+
+      .error {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        border-left: 5px solid #dc2626;
+        color: #dc2626;
+      }
+
+      .chart-container {
+        margin-top: 30px;
+        position: relative;
+        height: 400px;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .data-table th,
+      .data-table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .data-table th {
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        color: white;
+        font-weight: 600;
+      }
+
+      .data-table tr:hover {
+        background: #f8fafc;
+      }
+
+      .missing-data {
+        background: #fef3c7 !important;
+        color: #d97706;
+        font-weight: 600;
+      }
+
+      .interpolated-data {
+        background: #dcfce7 !important;
+        color: #16a34a;
+        font-weight: 600;
+      }
+
+      .history-container {
+        margin-top: 40px;
+        border-top: 2px solid #e5e7eb;
+        padding-top: 30px;
+      }
+
+      .history-item {
+        background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 4px solid #2563eb;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .history-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .mobile-menu {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none;
+        }
+
+        .mobile-menu {
+          display: block;
+          background: none;
+          border: none;
+          font-size: 1.5em;
+          color: #1d4ed8;
+          cursor: pointer;
+        }
+
+        .container {
+          margin: 20px;
+          padding: 20px;
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+      }
+    </style>
   </head>
   <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <i class="fas fa-calculator"></i> Interpolasi Stirling
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item active" data-page="home">
+            <i class="fas fa-home"></i> Beranda
+          </li>
+          <li class="nav-item" data-page="temperature">
+            <i class="fas fa-temperature-high"></i> Suhu
+          </li>
+          <li class="nav-item" data-page="grades">
+            <i class="fas fa-graduation-cap"></i> Rapor/IPK
+          </li>
+          <li class="nav-item" data-page="currency">
+            <i class="fas fa-dollar-sign"></i> Kurs
+          </li>
+          <li class="nav-item" data-page="data-filling">
+            <i class="fas fa-fill-drip"></i> Isi Data
+          </li>
+          <li class="nav-item" data-page="graph-completion">
+            <i class="fas fa-chart-line"></i> Grafik
+          </li>
+        </ul>
+        <button class="mobile-menu" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <!-- Menu mobile -->
+        <div class="mobile-nav-menu" id="mobileNavMenu">
+          <div class="nav-item active" data-page="home">
+            <i class="fas fa-home"></i> Beranda
+          </div>
+          <div class="nav-item" data-page="temperature">
+            <i class="fas fa-temperature-high"></i> Suhu
+          </div>
+          <div class="nav-item" data-page="grades">
+            <i class="fas fa-graduation-cap"></i> Rapor/IPK
+          </div>
+          <div class="nav-item" data-page="currency">
+            <i class="fas fa-dollar-sign"></i> Kurs
+          </div>
+          <div class="nav-item" data-page="data-filling">
+            <i class="fas fa-fill-drip"></i> Isi Data
+          </div>
+          <div class="nav-item" data-page="graph-completion">
+            <i class="fas fa-chart-line"></i> Grafik
+          </div>
+        </div>
+      </div>
+    </nav>
+
     <div class="container">
-      <h2><i class="fas fa-chart-line"></i> Aplikasi Interpolasi Stirling</h2>
+      <!-- Halaman Beranda -->
+      <div id="home" class="page active">
+        <h2>
+          <i class="fas fa-calculator"></i> Sistem Interpolasi Stirling
+          Multi-Fungsi
+        </h2>
+        <p
+          style="
+            text-align: center;
+            font-size: 1.2em;
+            color: #6b7280;
+            margin-bottom: 40px;
+          "
+        >
+          Pilih aplikasi interpolasi yang Anda butuhkan
+        </p>
 
-      <!-- Tab Navigation -->
-      <div class="tab-navigation">
-        <button class="tab-button active" data-tab="suhu">
-          <i class="fas fa-temperature-high"></i> Suhu
-        </button>
-        <button class="tab-button" data-tab="dolar">
-          <i class="fas fa-dollar-sign"></i> Nilai Dolar
-        </button>
-        <button class="tab-button" data-tab="semester">
-          <i class="fas fa-graduation-cap"></i> Nilai Semester
-        </button>
-      </div>
-
-      <!-- Tab Content - Suhu -->
-      <div class="tab-content active" id="suhuTab">
-        <div id="inputSection">
-          <label
-            ><i class="fas fa-keyboard"></i> Masukkan data manual (format: x,y
-            per baris):</label
-          >
-          <textarea
-            id="dataInput"
-            rows="6"
-            placeholder="Contoh:
-1,15
-2,18
-3,21
-4,24
-5,27"
-          ></textarea>
-
-          <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
-          <input type="file" id="csvFile" accept=".csv" />
-
-          <label
-            ><i class="fas fa-crosshairs"></i> Nilai X yang ingin
-            diinterpolasi:</label
-          >
-          <input type="number" id="xInput" step="any" />
-
-          <div class="button-group">
-            <button id="hitungBtn">
-              <i class="fas fa-calculator"></i> Hitung
-            </button>
-            <button id="hitungBaruBtn" style="display: none">
-              <i class="fas fa-plus"></i> Hitung Baru
-            </button>
-            <button id="unduhHasilBtn" disabled>
-              <i class="fas fa-download"></i> Unduh Hasil
-            </button>
-            <button id="unduhGrafikBtn" disabled>
-              <i class="fas fa-image"></i> Unduh Grafik
-            </button>
+        <div class="feature-grid">
+          <div class="feature-card" data-page="temperature">
+            <i class="fas fa-temperature-high"></i>
+            <h3>Interpolasi Suhu</h3>
+            <p>
+              Hitung prediksi suhu berdasarkan data historis menggunakan metode
+              Stirling
+            </p>
           </div>
 
-          <div class="output" id="hasilOutput">
-            Hasil akan ditampilkan di sini...
+          <div class="feature-card" data-page="grades">
+            <i class="fas fa-graduation-cap"></i>
+            <h3>Prediksi Nilai Rapor/IPK</h3>
+            <p>
+              Prediksi nilai akademik berdasarkan tren historis prestasi siswa
+            </p>
           </div>
 
-          <div class="chart-container">
-            <canvas id="chartCanvas"></canvas>
+          <div class="feature-card" data-page="currency">
+            <i class="fas fa-dollar-sign"></i>
+            <h3>Prediksi Kurs Mata Uang</h3>
+            <p>Estimasi nilai tukar mata uang berdasarkan data historis</p>
+          </div>
+
+          <div class="feature-card" data-page="data-filling">
+            <i class="fas fa-fill-drip"></i>
+            <h3>Mengisi Data Tengah</h3>
+            <p>
+              Interpolasi untuk melengkapi data yang hilang di tengah dataset
+            </p>
+          </div>
+
+          <div class="feature-card" data-page="graph-completion">
+            <i class="fas fa-chart-line"></i>
+            <h3>Melengkapi Grafik</h3>
+            <p>
+              Interpolasi titik-titik untuk melengkapi grafik yang tidak
+              sempurna
+            </p>
           </div>
         </div>
       </div>
 
-      <!-- Tab Content - Dolar -->
-      <div class="tab-content" id="dolarTab">
-        <div id="dolarInputSection">
-          <label
-            ><i class="fas fa-keyboard"></i> Masukkan data kurs (format:
-            tanggal,nilai per baris):</label
-          >
-          <textarea
-            id="dolarDataInput"
-            rows="6"
-            placeholder="Contoh:
-1,15500
-2,15600
-3,15550
-4,15700
-5,15800"
-          ></textarea>
+      <!-- Halaman Interpolasi Suhu -->
+      <div id="temperature" class="page">
+        <h2><i class="fas fa-temperature-high"></i> Interpolasi Suhu</h2>
 
-          <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
-          <input type="file" id="dolarCsvFile" accept=".csv" />
+        <label><i class="fas fa-keyboard"></i> Data Suhu (waktu, suhu):</label>
+        <textarea
+          id="tempDataInput"
+          rows="6"
+          placeholder="Format: waktu,suhu
+1,15.5
+2,18.2
+3,21.8
+4,24.1
+5,27.3"
+        ></textarea>
 
-          <label
-            ><i class="fas fa-calendar-day"></i> Tanggal yang ingin diprediksi
-            (X):</label
-          >
-          <input type="number" id="dolarXInput" step="any" />
+        <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
+        <input type="file" id="tempCsvFile" accept=".csv" />
 
-          <div class="button-group">
-            <button id="hitungDolarBtn">
-              <i class="fas fa-calculator"></i> Hitung
-            </button>
-            <button id="hitungDolarBaruBtn" style="display: none">
-              <i class="fas fa-plus"></i> Hitung Baru
-            </button>
-            <button id="unduhDolarHasilBtn" disabled>
-              <i class="fas fa-download"></i> Unduh Hasil
-            </button>
-            <button id="unduhDolarGrafikBtn" disabled>
-              <i class="fas fa-image"></i> Unduh Grafik
-            </button>
-          </div>
+        <label
+          ><i class="fas fa-crosshairs"></i> Waktu yang ingin diprediksi:</label
+        >
+        <input
+          type="number"
+          id="tempXInput"
+          step="any"
+          placeholder="Contoh: 2.5"
+        />
 
-          <div class="output" id="dolarHasilOutput">
-            Hasil akan ditampilkan di sini...
-          </div>
+        <div class="button-group">
+          <button id="tempHitungBtn">
+            <i class="fas fa-calculator"></i> Hitung Prediksi
+          </button>
+          <button id="tempResetBtn">
+            <i class="fas fa-refresh"></i> Reset
+          </button>
+          <button id="tempDownloadBtn" disabled>
+            <i class="fas fa-download"></i> Unduh Hasil
+          </button>
+        </div>
 
-          <div class="chart-container">
-            <canvas id="dolarChartCanvas"></canvas>
-          </div>
+        <div class="output" id="tempOutput">
+          Hasil prediksi akan ditampilkan di sini...
+        </div>
+        <div class="chart-container">
+          <canvas id="tempChart"></canvas>
         </div>
       </div>
 
-      <!-- Tab Content - Semester -->
-      <div class="tab-content" id="semesterTab">
-        <div id="semesterInputSection">
-          <label
-            ><i class="fas fa-keyboard"></i> Masukkan data nilai (format:
-            semester,nilai per baris):</label
-          >
-          <textarea
-            id="semesterDataInput"
-            rows="6"
-            placeholder="Contoh:
-1,3.50
-2,3.60
-3,3.70
-4,3.65
-5,3.75"
-          ></textarea>
+      <!-- Halaman Rapor/IPK -->
+      <div id="grades" class="page">
+        <h2><i class="fas fa-graduation-cap"></i> Prediksi Nilai Rapor/IPK</h2>
 
-          <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
-          <input type="file" id="semesterCsvFile" accept=".csv" />
+        <label><i class="fas fa-list-ol"></i> Jenis Prediksi:</label>
+        <select id="gradeType">
+          <option value="rapor">Nilai Rapor (0-100)</option>
+          <option value="ipk">IPK (0-4.0)</option>
+        </select>
 
-          <label
-            ><i class="fas fa-graduation-cap"></i> Semester yang ingin
-            diprediksi (X):</label
-          >
-          <input type="number" id="semesterXInput" step="any" />
+        <label
+          ><i class="fas fa-keyboard"></i> Data Nilai (semester/periode,
+          nilai):</label
+        >
+        <textarea
+          id="gradeDataInput"
+          rows="6"
+          placeholder="Format: periode,nilai
+1,85.5
+2,87.2
+3,89.1
+4,88.7
+5,90.3"
+        ></textarea>
 
-          <div class="button-group">
-            <button id="hitungSemesterBtn">
-              <i class="fas fa-calculator"></i> Hitung
-            </button>
-            <button id="hitungSemesterBaruBtn" style="display: none">
-              <i class="fas fa-plus"></i> Hitung Baru
-            </button>
-            <button id="unduhSemesterHasilBtn" disabled>
-              <i class="fas fa-download"></i> Unduh Hasil
-            </button>
-            <button id="unduhSemesterGrafikBtn" disabled>
-              <i class="fas fa-image"></i> Unduh Grafik
-            </button>
-          </div>
+        <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
+        <input type="file" id="gradeCsvFile" accept=".csv" />
 
-          <div class="output" id="semesterHasilOutput">
-            Hasil akan ditampilkan di sini...
-          </div>
+        <label
+          ><i class="fas fa-crosshairs"></i> Periode yang ingin
+          diprediksi:</label
+        >
+        <input
+          type="number"
+          id="gradeXInput"
+          step="any"
+          placeholder="Contoh: 3.5"
+        />
 
-          <div class="chart-container">
-            <canvas id="semesterChartCanvas"></canvas>
-          </div>
+        <div class="button-group">
+          <button id="gradeHitungBtn">
+            <i class="fas fa-calculator"></i> Prediksi Nilai
+          </button>
+          <button id="gradeResetBtn">
+            <i class="fas fa-refresh"></i> Reset
+          </button>
+          <button id="gradeDownloadBtn" disabled>
+            <i class="fas fa-download"></i> Unduh Hasil
+          </button>
+        </div>
+
+        <div class="output" id="gradeOutput">
+          Hasil prediksi akan ditampilkan di sini...
+        </div>
+        <div class="chart-container">
+          <canvas id="gradeChart"></canvas>
         </div>
       </div>
 
-      <!-- History Section (Common) -->
-      <div class="history-container" id="historySection">
-        <h3><i class="fas fa-history"></i> Riwayat Perhitungan</h3>
-        <div id="historyList"></div>
-        <button class="clear-history" id="clearHistoryBtn">
-          <i class="fas fa-trash"></i> Hapus Riwayat
-        </button>
+      <!-- Halaman Kurs -->
+      <div id="currency" class="page">
+        <h2><i class="fas fa-dollar-sign"></i> Prediksi Kurs Mata Uang</h2>
+
+        <label><i class="fas fa-money-bill"></i> Pasangan Mata Uang:</label>
+        <select id="currencyPair">
+          <option value="USD/IDR">USD/IDR</option>
+          <option value="EUR/IDR">EUR/IDR</option>
+          <option value="JPY/IDR">JPY/IDR</option>
+          <option value="GBP/IDR">GBP/IDR</option>
+          <option value="custom">Lainnya (Custom)</option>
+        </select>
+
+        <label
+          ><i class="fas fa-keyboard"></i> Data Kurs (hari, nilai kurs):</label
+        >
+        <textarea
+          id="currencyDataInput"
+          rows="6"
+          placeholder="Format: hari,kurs
+1,15420
+2,15450
+3,15380
+4,15510
+5,15490"
+        ></textarea>
+
+        <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
+        <input type="file" id="currencyCsvFile" accept=".csv" />
+
+        <label
+          ><i class="fas fa-crosshairs"></i> Hari yang ingin diprediksi:</label
+        >
+        <input
+          type="number"
+          id="currencyXInput"
+          step="any"
+          placeholder="Contoh: 2.5"
+        />
+
+        <div class="button-group">
+          <button id="currencyHitungBtn">
+            <i class="fas fa-calculator"></i> Prediksi Kurs
+          </button>
+          <button id="currencyResetBtn">
+            <i class="fas fa-refresh"></i> Reset
+          </button>
+          <button id="currencyDownloadBtn" disabled>
+            <i class="fas fa-download"></i> Unduh Hasil
+          </button>
+        </div>
+
+        <div class="output" id="currencyOutput">
+          Hasil prediksi akan ditampilkan di sini...
+        </div>
+        <div class="chart-container">
+          <canvas id="currencyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Halaman Mengisi Data Tengah -->
+      <div id="data-filling" class="page">
+        <h2>
+          <i class="fas fa-fill-drip"></i> Mengisi Data Tengah yang Hilang
+        </h2>
+
+        <label><i class="fas fa-info-circle"></i> Petunjuk:</label>
+        <p
+          style="
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+          "
+        >
+          Masukkan data dengan beberapa nilai yang hilang. Gunakan "?" atau
+          kosongkan nilai Y untuk data yang hilang. Contoh: 1,20 → 2,? → 3,25
+        </p>
+
+        <label
+          ><i class="fas fa-keyboard"></i> Data dengan nilai hilang (x, y atau
+          ?):</label
+        >
+        <textarea
+          id="fillDataInput"
+          rows="8"
+          placeholder="Format: x,y (gunakan ? untuk data hilang)
+1,10
+2,?
+3,18
+4,?
+5,26
+6,?
+7,34"
+        ></textarea>
+
+        <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
+        <input type="file" id="fillCsvFile" accept=".csv" />
+
+        <div class="button-group">
+          <button id="fillHitungBtn">
+            <i class="fas fa-calculator"></i> Isi Data Hilang
+          </button>
+          <button id="fillResetBtn">
+            <i class="fas fa-refresh"></i> Reset
+          </button>
+          <button id="fillDownloadBtn" disabled>
+            <i class="fas fa-download"></i> Unduh Hasil
+          </button>
+        </div>
+
+        <div class="output" id="fillOutput">
+          Hasil pengisian data akan ditampilkan di sini...
+        </div>
+
+        <div style="margin-top: 30px">
+          <h3>Tabel Data Lengkap:</h3>
+          <table class="data-table" id="fillTable" style="display: none">
+            <thead>
+              <tr>
+                <th>X</th>
+                <th>Y Asli</th>
+                <th>Y Terinterpolasi</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="fillTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="fillChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Halaman Melengkapi Grafik -->
+      <div id="graph-completion" class="page">
+        <h2>
+          <i class="fas fa-chart-line"></i> Melengkapi Grafik Tidak Lengkap
+        </h2>
+
+        <label><i class="fas fa-cog"></i> Jenis Grafik:</label>
+        <select id="graphType">
+          <option value="sparse">Grafik Jarang (titik sedikit)</option>
+          <option value="irregular">Grafik Tidak Beraturan</option>
+          <option value="partial">Grafik Sebagian</option>
+        </select>
+
+        <label
+          ><i class="fas fa-keyboard"></i> Titik-titik grafik yang ada:</label
+        >
+        <textarea
+          id="graphDataInput"
+          rows="6"
+          placeholder="Format: x,y
+0,5
+1,8
+3,20
+6,45
+10,80"
+        ></textarea>
+
+        <label><i class="fas fa-file-csv"></i> Atau unggah file CSV:</label>
+        <input type="file" id="graphCsvFile" accept=".csv" />
+
+        <label
+          ><i class="fas fa-sliders-h"></i> Jumlah titik interpolasi
+          tambahan:</label
+        >
+        <input type="number" id="graphPointsInput" min="1" max="20" value="5" />
+
+        <label
+          ><i class="fas fa-crosshairs"></i> Atau tentukan titik X spesifik
+          untuk interpolasi:</label
+        >
+        <input
+          type="text"
+          id="graphSpecificPoints"
+          placeholder="Contoh: 2,4,5,7,8 (pisahkan dengan koma)"
+        />
+
+        <div class="button-group">
+          <button id="graphHitungBtn">
+            <i class="fas fa-calculator"></i> Lengkapi Grafik
+          </button>
+          <button id="graphResetBtn">
+            <i class="fas fa-refresh"></i> Reset
+          </button>
+          <button id="graphDownloadBtn" disabled>
+            <i class="fas fa-download"></i> Unduh Hasil
+          </button>
+        </div>
+
+        <div class="output" id="graphOutput">
+          Hasil pelengkapan grafik akan ditampilkan di sini...
+        </div>
+
+        <div style="margin-top: 30px">
+          <h3>Perbandingan Data:</h3>
+          <table class="data-table" id="graphTable" style="display: none">
+            <thead>
+              <tr>
+                <th>X</th>
+                <th>Y</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="graphTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="graphChart"></canvas>
+        </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets/js/utils.js"></script>
-    <script src="assets/js/history.js"></script>
-    <script src="assets/js/chart.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/tabs.js"></script>
-    <script src="assets/js/dolar.js"></script>
-    <script src="assets/js/semester.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+        const mobileNavMenu = document.getElementById("mobileNavMenu");
+        const mobileNavItems = document.querySelectorAll(
+          ".mobile-nav-menu .nav-item"
+        );
+
+        // Toggle mobile menu
+        mobileMenuBtn.addEventListener("click", function () {
+          mobileNavMenu.classList.toggle("active");
+          mobileMenuBtn.classList.toggle("active");
+        });
+
+        // Handle mobile navigation clicks
+        mobileNavItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            const pageId = item.getAttribute("data-page");
+            showPage(pageId);
+
+            // Close mobile menu after selection
+            mobileNavMenu.classList.remove("active");
+            mobileMenuBtn.classList.remove("active");
+          });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener("click", function (e) {
+          if (
+            !mobileMenuBtn.contains(e.target) &&
+            !mobileNavMenu.contains(e.target)
+          ) {
+            mobileNavMenu.classList.remove("active");
+            mobileMenuBtn.classList.remove("active");
+          }
+        });
+
+        // Update mobile menu active state
+        function updateMobileMenuActive(pageId) {
+          mobileNavItems.forEach((item) => {
+            item.classList.remove("active");
+            if (item.getAttribute("data-page") === pageId) {
+              item.classList.add("active");
+            }
+          });
+        }
+
+        // Modified showPage function to include mobile menu update
+        function showPage(pageId) {
+          const pages = document.querySelectorAll(".page");
+          const navItems = document.querySelectorAll(".nav-menu .nav-item");
+
+          pages.forEach((page) => page.classList.remove("active"));
+          navItems.forEach((item) => item.classList.remove("active"));
+
+          document.getElementById(pageId).classList.add("active");
+          document
+            .querySelector(`.nav-menu [data-page="${pageId}"]`)
+            .classList.add("active");
+
+          // Update mobile menu active state
+          updateMobileMenuActive(pageId);
+        }
+
+        // Initialize navigation (existing code)
+        const navItems = document.querySelectorAll(".nav-menu .nav-item");
+        const featureCards = document.querySelectorAll(".feature-card");
+
+        navItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            const pageId = item.getAttribute("data-page");
+            showPage(pageId);
+          });
+        });
+
+        featureCards.forEach((card) => {
+          card.addEventListener("click", () => {
+            const pageId = card.getAttribute("data-page");
+            showPage(pageId);
+          });
+        });
+
+        // Initialize all modules (existing code)
+        initTemperatureModule();
+        initGradesModule();
+        initCurrencyModule();
+        initDataFillingModule();
+        initGraphCompletionModule();
+      });
+      // Navigation System
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize navigation
+        const navItems = document.querySelectorAll(".nav-item");
+        const featureCards = document.querySelectorAll(".feature-card");
+        const pages = document.querySelectorAll(".page");
+
+        function showPage(pageId) {
+          pages.forEach((page) => page.classList.remove("active"));
+          navItems.forEach((item) => item.classList.remove("active"));
+
+          document.getElementById(pageId).classList.add("active");
+          document
+            .querySelector(`[data-page="${pageId}"]`)
+            .classList.add("active");
+        }
+
+        navItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            const pageId = item.getAttribute("data-page");
+            showPage(pageId);
+          });
+        });
+
+        featureCards.forEach((card) => {
+          card.addEventListener("click", () => {
+            const pageId = card.getAttribute("data-page");
+            showPage(pageId);
+          });
+        });
+
+        // Initialize all modules
+        initTemperatureModule();
+        initGradesModule();
+        initCurrencyModule();
+        initDataFillingModule();
+        initGraphCompletionModule();
+      });
+
+      // Stirling Interpolation Core Function
+      function stirlingInterpolation(data, xValue) {
+        const n = data.length;
+
+        if (n < 5 || n % 2 === 0) {
+          throw new Error("Jumlah data harus ganjil dan minimal 5.");
+        }
+
+        // Sort data
+        data.sort((a, b) => a.x - b.x);
+
+        // Calculate uniform interval
+        const h = data[1].x - data[0].x;
+
+        // Validate uniform intervals
+        for (let i = 1; i < data.length; i++) {
+          if (Math.abs(data[i].x - data[i - 1].x - h) > 0.0001) {
+            throw new Error("Interval data X harus seragam");
+          }
+        }
+
+        const mid = Math.floor(n / 2);
+        const u = (xValue - data[mid].x) / h;
+
+        // Create difference table
+        const diffTable = Array(n)
+          .fill()
+          .map(() => Array(n).fill(0));
+        for (let i = 0; i < n; i++) {
+          diffTable[i][0] = data[i].y;
+        }
+
+        for (let j = 1; j < n; j++) {
+          for (let i = 0; i < n - j; i++) {
+            diffTable[i][j] = diffTable[i + 1][j - 1] - diffTable[i][j - 1];
+          }
+        }
+
+        // Stirling interpolation process
+        let result = diffTable[mid][0];
+        let fact = 1;
+        let uTerm = 1;
+        let k = 1;
+
+        for (let i = 1; i < n; i++) {
+          fact *= i;
+
+          if (i % 2 === 1) {
+            uTerm *= (u - (k - 1)) * (u + (k - 1));
+            result +=
+              (uTerm / fact) *
+              ((diffTable[mid - k + 1][i] + diffTable[mid - k][i]) / 2);
+            k++;
+          } else {
+            uTerm *= u - (k - 1);
+            result += (uTerm / fact) * diffTable[mid - (k - 1)][i];
+          }
+        }
+
+        return result;
+      }
+
+      // Utility Functions
+      function parseCSV(text) {
+        return text
+          .trim()
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(
+            (line) => line.length > 0 && !line.toLowerCase().includes("x")
+          )
+          .map((line) => {
+            const parts = line.split(",").map((part) => part.trim());
+            if (parts.length !== 2) {
+              throw new Error(`Format data tidak valid: ${line}`);
+            }
+
+            const x = parseFloat(parts[0]);
+            let y = parts[1];
+
+            if (isNaN(x)) {
+              throw new Error(`Nilai X tidak valid: ${parts[0]}`);
+            }
+
+            // Handle missing data
+            if (y === "?" || y === "" || y.toLowerCase() === "null") {
+              return { x: x, y: null, missing: true };
+            }
+
+            y = parseFloat(y);
+            if (isNaN(y)) {
+              throw new Error(`Nilai Y tidak valid: ${parts[1]}`);
+            }
+
+            return { x: x, y: y, missing: false };
+          });
+      }
+
+      function createChart(
+        canvasId,
+        data,
+        interpolatedPoints = [],
+        title = "Grafik Interpolasi"
+      ) {
+        const ctx = document.getElementById(canvasId).getContext("2d");
+
+        // Destroy existing chart
+        if (window[canvasId + "_chart"]) {
+          window[canvasId + "_chart"].destroy();
+        }
+
+        const datasets = [
+          {
+            label: "Data Asli",
+            data: data.map((d) => ({ x: d.x, y: d.y })),
+            borderColor: "rgba(54, 162, 235, 1)",
+            backgroundColor: "rgba(54, 162, 235, 0.7)",
+            showLine: true,
+            tension: 0.3,
+            pointStyle: "circle",
+            pointRadius: 8,
+            borderWidth: 2,
+          },
+        ];
+
+        if (interpolatedPoints.length > 0) {
+          datasets.push({
+            label: "Titik Interpolasi",
+            data: interpolatedPoints,
+            backgroundColor: "rgba(255, 99, 132, 0.8)",
+            borderColor: "rgba(255, 99, 132, 1)",
+            pointStyle: "triangle",
+            pointRadius: 10,
+            borderWidth: 2,
+            showLine: false,
+          });
+        }
+
+        window[canvasId + "_chart"] = new Chart(ctx, {
+          type: "scatter",
+          data: { datasets: datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+                labels: {
+                  usePointStyle: true,
+                  padding: 20,
+                },
+              },
+              title: {
+                display: true,
+                text: title,
+                font: { size: 16, weight: "bold" },
+              },
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: "X",
+                  font: { weight: "bold" },
+                },
+                grid: { display: true, color: "rgba(0, 0, 0, 0.05)" },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Y",
+                  font: { weight: "bold" },
+                },
+                grid: { display: true, color: "rgba(0, 0, 0, 0.05)" },
+              },
+            },
+          },
+        });
+      }
+
+      // Temperature Module
+      function initTemperatureModule() {
+        const hitungBtn = document.getElementById("tempHitungBtn");
+        const resetBtn = document.getElementById("tempResetBtn");
+        const downloadBtn = document.getElementById("tempDownloadBtn");
+        const csvFile = document.getElementById("tempCsvFile");
+
+        csvFile.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById("tempDataInput").value =
+              e.target.result.trim();
+          };
+          reader.readAsText(file);
+        });
+
+        hitungBtn.addEventListener("click", function () {
+          try {
+            const inputText = document.getElementById("tempDataInput").value;
+            const xValue = parseFloat(
+              document.getElementById("tempXInput").value
+            );
+
+            if (!inputText || isNaN(xValue)) {
+              throw new Error("Harap masukkan data dan nilai X yang valid");
+            }
+
+            const data = parseCSV(inputText);
+            const result = stirlingInterpolation(data, xValue);
+
+            const output = document.getElementById("tempOutput");
+            output.className = "output";
+            output.innerHTML = `
+            <h3>Hasil Prediksi Suhu</h3>
+            <p><strong>Waktu:</strong> ${xValue}</p>
+            <p><strong>Suhu Prediksi:</strong> ${result.toFixed(2)}°C</p>
+            <p><strong>Jumlah Data:</strong> ${data.length}</p>
+            <p><strong>Metode:</strong> Interpolasi Stirling</p>
+          `;
+
+            createChart(
+              "tempChart",
+              data,
+              [{ x: xValue, y: result }],
+              "Prediksi Suhu"
+            );
+            downloadBtn.disabled = false;
+
+            // Store result for download
+            window.tempResult = {
+              xValue: xValue,
+              result: result,
+              data: data,
+              type: "temperature",
+            };
+          } catch (error) {
+            const output = document.getElementById("tempOutput");
+            output.className = "output error";
+            output.textContent = error.message;
+          }
+        });
+
+        resetBtn.addEventListener("click", function () {
+          document.getElementById("tempDataInput").value = "";
+          document.getElementById("tempXInput").value = "";
+          document.getElementById("tempCsvFile").value = "";
+          document.getElementById("tempOutput").textContent =
+            "Hasil prediksi akan ditampilkan di sini...";
+          document.getElementById("tempOutput").className = "output";
+          downloadBtn.disabled = true;
+
+          if (window.tempChart_chart) {
+            window.tempChart_chart.destroy();
+          }
+        });
+
+        downloadBtn.addEventListener("click", function () {
+          if (window.tempResult) {
+            const result = window.tempResult;
+            const content = `Hasil Prediksi Suhu - Interpolasi Stirling
+            
+Waktu: ${result.xValue}
+Suhu Prediksi: ${result.result.toFixed(2)}°C
+Jumlah Data: ${result.data.length}
+Metode: Interpolasi Stirling
+
+Data yang digunakan:
+${result.data.map((d) => `Waktu: ${d.x}, Suhu: ${d.y}°C`).join("\n")}
+
+Timestamp: ${new Date().toLocaleString()}`;
+
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "prediksi_suhu_stirling.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        });
+      }
+
+      // Grades Module
+      function initGradesModule() {
+        const hitungBtn = document.getElementById("gradeHitungBtn");
+        const resetBtn = document.getElementById("gradeResetBtn");
+        const downloadBtn = document.getElementById("gradeDownloadBtn");
+        const csvFile = document.getElementById("gradeCsvFile");
+
+        csvFile.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById("gradeDataInput").value =
+              e.target.result.trim();
+          };
+          reader.readAsText(file);
+        });
+
+        hitungBtn.addEventListener("click", function () {
+          try {
+            const inputText = document.getElementById("gradeDataInput").value;
+            const xValue = parseFloat(
+              document.getElementById("gradeXInput").value
+            );
+            const gradeType = document.getElementById("gradeType").value;
+
+            if (!inputText || isNaN(xValue)) {
+              throw new Error("Harap masukkan data dan periode yang valid");
+            }
+
+            const data = parseCSV(inputText);
+            const result = stirlingInterpolation(data, xValue);
+
+            // Validate result based on grade type
+            let validatedResult = result;
+            let unit = "";
+
+            if (gradeType === "rapor") {
+              validatedResult = Math.max(0, Math.min(100, result));
+              unit = "/100";
+            } else {
+              validatedResult = Math.max(0, Math.min(4.0, result));
+              unit = "/4.0";
+            }
+
+            const output = document.getElementById("gradeOutput");
+            output.className = "output";
+            output.innerHTML = `
+            <h3>Hasil Prediksi ${
+              gradeType === "rapor" ? "Nilai Rapor" : "IPK"
+            }</h3>
+            <p><strong>Periode:</strong> ${xValue}</p>
+            <p><strong>Prediksi ${
+              gradeType === "rapor" ? "Nilai" : "IPK"
+            }:</strong> ${validatedResult.toFixed(2)}${unit}</p>
+            <p><strong>Jumlah Data:</strong> ${data.length}</p>
+            <p><strong>Metode:</strong> Interpolasi Stirling</p>
+            ${
+              result !== validatedResult
+                ? '<p style="color: #d97706;"><em>*Hasil telah disesuaikan dengan rentang nilai yang valid</em></p>'
+                : ""
+            }
+          `;
+
+            createChart(
+              "gradeChart",
+              data,
+              [{ x: xValue, y: validatedResult }],
+              `Prediksi ${gradeType === "rapor" ? "Nilai Rapor" : "IPK"}`
+            );
+            downloadBtn.disabled = false;
+
+            window.gradeResult = {
+              xValue: xValue,
+              result: validatedResult,
+              originalResult: result,
+              data: data,
+              type: gradeType,
+            };
+          } catch (error) {
+            const output = document.getElementById("gradeOutput");
+            output.className = "output error";
+            output.textContent = error.message;
+          }
+        });
+
+        resetBtn.addEventListener("click", function () {
+          document.getElementById("gradeDataInput").value = "";
+          document.getElementById("gradeXInput").value = "";
+          document.getElementById("gradeCsvFile").value = "";
+          document.getElementById("gradeOutput").textContent =
+            "Hasil prediksi akan ditampilkan di sini...";
+          document.getElementById("gradeOutput").className = "output";
+          downloadBtn.disabled = true;
+
+          if (window.gradeChart_chart) {
+            window.gradeChart_chart.destroy();
+          }
+        });
+
+        downloadBtn.addEventListener("click", function () {
+          if (window.gradeResult) {
+            const result = window.gradeResult;
+            const content = `Hasil Prediksi ${
+              result.type === "rapor" ? "Nilai Rapor" : "IPK"
+            } - Interpolasi Stirling
+            
+Periode: ${result.xValue}
+Prediksi ${result.type === "rapor" ? "Nilai" : "IPK"}: ${result.result.toFixed(
+              2
+            )}${result.type === "rapor" ? "/100" : "/4.0"}
+Jumlah Data: ${result.data.length}
+Metode: Interpolasi Stirling
+
+Data yang digunakan:
+${result.data
+  .map(
+    (d) =>
+      `Periode: ${d.x}, ${result.type === "rapor" ? "Nilai" : "IPK"}: ${d.y}`
+  )
+  .join("\n")}
+
+Timestamp: ${new Date().toLocaleString()}`;
+
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `prediksi_${result.type}_stirling.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        });
+      }
+
+      // Currency Module
+      function initCurrencyModule() {
+        const hitungBtn = document.getElementById("currencyHitungBtn");
+        const resetBtn = document.getElementById("currencyResetBtn");
+        const downloadBtn = document.getElementById("currencyDownloadBtn");
+        const csvFile = document.getElementById("currencyCsvFile");
+
+        csvFile.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById("currencyDataInput").value =
+              e.target.result.trim();
+          };
+          reader.readAsText(file);
+        });
+
+        hitungBtn.addEventListener("click", function () {
+          try {
+            const inputText =
+              document.getElementById("currencyDataInput").value;
+            const xValue = parseFloat(
+              document.getElementById("currencyXInput").value
+            );
+            const currencyPair = document.getElementById("currencyPair").value;
+
+            if (!inputText || isNaN(xValue)) {
+              throw new Error("Harap masukkan data dan hari yang valid");
+            }
+
+            const data = parseCSV(inputText);
+            const result = stirlingInterpolation(data, xValue);
+
+            const output = document.getElementById("currencyOutput");
+            output.className = "output";
+            output.innerHTML = `
+            <h3>Hasil Prediksi Kurs ${currencyPair}</h3>
+            <p><strong>Hari:</strong> ${xValue}</p>
+            <p><strong>Prediksi Kurs:</strong> ${result.toLocaleString(
+              "id-ID",
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            )}</p>
+            <p><strong>Jumlah Data:</strong> ${data.length}</p>
+            <p><strong>Metode:</strong> Interpolasi Stirling</p>
+            <p style="color: #d97706; font-size: 0.9em;"><em>*Prediksi ini hanya untuk referensi, bukan saran investasi</em></p>
+          `;
+
+            createChart(
+              "currencyChart",
+              data,
+              [{ x: xValue, y: result }],
+              `Prediksi Kurs ${currencyPair}`
+            );
+            downloadBtn.disabled = false;
+
+            window.currencyResult = {
+              xValue: xValue,
+              result: result,
+              data: data,
+              currencyPair: currencyPair,
+            };
+          } catch (error) {
+            const output = document.getElementById("currencyOutput");
+            output.className = "output error";
+            output.textContent = error.message;
+          }
+        });
+
+        resetBtn.addEventListener("click", function () {
+          document.getElementById("currencyDataInput").value = "";
+          document.getElementById("currencyXInput").value = "";
+          document.getElementById("currencyCsvFile").value = "";
+          document.getElementById("currencyOutput").textContent =
+            "Hasil prediksi akan ditampilkan di sini...";
+          document.getElementById("currencyOutput").className = "output";
+          downloadBtn.disabled = true;
+
+          if (window.currencyChart_chart) {
+            window.currencyChart_chart.destroy();
+          }
+        });
+
+        downloadBtn.addEventListener("click", function () {
+          if (window.currencyResult) {
+            const result = window.currencyResult;
+            const content = `Hasil Prediksi Kurs ${
+              result.currencyPair
+            } - Interpolasi Stirling
+            
+Hari: ${result.xValue}
+Prediksi Kurs: ${result.result.toLocaleString("id-ID", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+Jumlah Data: ${result.data.length}
+Metode: Interpolasi Stirling
+
+Data yang digunakan:
+${result.data
+  .map((d) => `Hari: ${d.x}, Kurs: ${d.y.toLocaleString("id-ID")}`)
+  .join("\n")}
+
+Disclaimer: Prediksi ini hanya untuk referensi, bukan saran investasi.
+Timestamp: ${new Date().toLocaleString()}`;
+
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `prediksi_kurs_${result.currencyPair.replace(
+              "/",
+              "_"
+            )}_stirling.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        });
+      }
+
+      // Data Filling Module
+      function initDataFillingModule() {
+        const hitungBtn = document.getElementById("fillHitungBtn");
+        const resetBtn = document.getElementById("fillResetBtn");
+        const downloadBtn = document.getElementById("fillDownloadBtn");
+        const csvFile = document.getElementById("fillCsvFile");
+
+        csvFile.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById("fillDataInput").value =
+              e.target.result.trim();
+          };
+          reader.readAsText(file);
+        });
+
+        hitungBtn.addEventListener("click", function () {
+          try {
+            const inputText = document.getElementById("fillDataInput").value;
+
+            if (!inputText) {
+              throw new Error("Harap masukkan data");
+            }
+
+            const rawData = parseCSV(inputText);
+            const completeData = rawData.filter((d) => !d.missing);
+            const missingData = rawData.filter((d) => d.missing);
+
+            if (completeData.length < 5) {
+              throw new Error(
+                "Minimal 5 data lengkap diperlukan untuk interpolasi"
+              );
+            }
+
+            // Fill missing data
+            const filledData = [...rawData];
+            missingData.forEach((missing) => {
+              try {
+                const interpolatedValue = stirlingInterpolation(
+                  completeData,
+                  missing.x
+                );
+                const index = filledData.findIndex(
+                  (d) => d.x === missing.x && d.missing
+                );
+                if (index !== -1) {
+                  filledData[index] = {
+                    x: missing.x,
+                    y: interpolatedValue,
+                    missing: false,
+                    interpolated: true,
+                  };
+                }
+              } catch (error) {
+                console.warn(
+                  `Tidak dapat menginterpolasi nilai untuk x=${missing.x}: ${error.message}`
+                );
+              }
+            });
+
+            // Display results
+            const output = document.getElementById("fillOutput");
+            output.className = "output";
+
+            const successfullyFilled = filledData.filter(
+              (d) => d.interpolated
+            ).length;
+
+            output.innerHTML = `
+            <h3>Hasil Pengisian Data</h3>
+            <p><strong>Total Data:</strong> ${filledData.length}</p>
+            <p><strong>Data Asli:</strong> ${completeData.length}</p>
+            <p><strong>Data Terisi:</strong> ${successfullyFilled}</p>
+            <p><strong>Metode:</strong> Interpolasi Stirling</p>
+          `;
+
+            // Update table
+            updateDataTable(filledData);
+
+            // Create charts
+            const originalPoints = completeData.map((d) => ({
+              x: d.x,
+              y: d.y,
+            }));
+            const interpolatedPoints = filledData
+              .filter((d) => d.interpolated)
+              .map((d) => ({ x: d.x, y: d.y }));
+
+            createChart(
+              "fillChart",
+              completeData,
+              interpolatedPoints,
+              "Data Asli vs Data Terinterpolasi"
+            );
+
+            downloadBtn.disabled = false;
+
+            window.fillResult = {
+              originalData: completeData,
+              filledData: filledData,
+              interpolatedCount: successfullyFilled,
+            };
+          } catch (error) {
+            const output = document.getElementById("fillOutput");
+            output.className = "output error";
+            output.textContent = error.message;
+          }
+        });
+
+        function updateDataTable(data) {
+          const table = document.getElementById("fillTable");
+          const tbody = document.getElementById("fillTableBody");
+
+          tbody.innerHTML = "";
+
+          data
+            .sort((a, b) => a.x - b.x)
+            .forEach((d) => {
+              const row = tbody.insertRow();
+              row.insertCell(0).textContent = d.x;
+
+              const originalCell = row.insertCell(1);
+              if (d.missing && !d.interpolated) {
+                originalCell.textContent = "Data Hilang";
+                originalCell.className = "missing-data";
+              } else if (d.interpolated) {
+                originalCell.textContent = "Data Hilang";
+                originalCell.className = "missing-data";
+              } else {
+                originalCell.textContent = d.y.toFixed(4);
+              }
+
+              const interpolatedCell = row.insertCell(2);
+              if (d.interpolated) {
+                interpolatedCell.textContent = d.y.toFixed(4);
+                interpolatedCell.className = "interpolated-data";
+              } else {
+                interpolatedCell.textContent = d.y.toFixed(4);
+              }
+
+              const statusCell = row.insertCell(3);
+              if (d.interpolated) {
+                statusCell.textContent = "Terinterpolasi";
+                statusCell.className = "interpolated-data";
+              } else {
+                statusCell.textContent = "Data Asli";
+              }
+            });
+
+          table.style.display = "table";
+        }
+
+        resetBtn.addEventListener("click", function () {
+          document.getElementById("fillDataInput").value = "";
+          document.getElementById("fillCsvFile").value = "";
+          document.getElementById("fillOutput").textContent =
+            "Hasil pengisian data akan ditampilkan di sini...";
+          document.getElementById("fillOutput").className = "output";
+          document.getElementById("fillTable").style.display = "none";
+          downloadBtn.disabled = true;
+
+          if (window.fillChart_chart) {
+            window.fillChart_chart.destroy();
+          }
+        });
+
+        downloadBtn.addEventListener("click", function () {
+          if (window.fillResult) {
+            const result = window.fillResult;
+            const content = `Hasil Pengisian Data - Interpolasi Stirling
+
+Total Data: ${result.filledData.length}
+Data Asli: ${result.originalData.length}
+Data Terinterpolasi: ${result.interpolatedCount}
+Metode: Interpolasi Stirling
+
+Data Lengkap:
+${result.filledData
+  .sort((a, b) => a.x - b.x)
+  .map(
+    (d) =>
+      `X: ${d.x}, Y: ${d.y.toFixed(4)} ${
+        d.interpolated ? "(Terinterpolasi)" : "(Asli)"
+      }`
+  )
+  .join("\n")}
+
+Timestamp: ${new Date().toLocaleString()}`;
+
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "data_lengkap_stirling.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        });
+      }
+
+      // Graph Completion Module
+      function initGraphCompletionModule() {
+        const hitungBtn = document.getElementById("graphHitungBtn");
+        const resetBtn = document.getElementById("graphResetBtn");
+        const downloadBtn = document.getElementById("graphDownloadBtn");
+        const csvFile = document.getElementById("graphCsvFile");
+
+        csvFile.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById("graphDataInput").value =
+              e.target.result.trim();
+          };
+          reader.readAsText(file);
+        });
+
+        hitungBtn.addEventListener("click", function () {
+          try {
+            const inputText = document.getElementById("graphDataInput").value;
+            const pointsCount = parseInt(
+              document.getElementById("graphPointsInput").value
+            );
+            const specificPoints = document.getElementById(
+              "graphSpecificPoints"
+            ).value;
+
+            if (!inputText) {
+              throw new Error("Harap masukkan data titik grafik");
+            }
+
+            const originalData = parseCSV(inputText);
+
+            if (originalData.length < 5) {
+              throw new Error("Minimal 5 titik diperlukan untuk interpolasi");
+            }
+
+            let interpolationPoints = [];
+
+            // Determine interpolation points
+            if (specificPoints.trim()) {
+              interpolationPoints = specificPoints
+                .split(",")
+                .map((p) => parseFloat(p.trim()))
+                .filter((p) => !isNaN(p));
+            } else {
+              // Generate points automatically
+              originalData.sort((a, b) => a.x - b.x);
+              const minX = originalData[0].x;
+              const maxX = originalData[originalData.length - 1].x;
+              const step = (maxX - minX) / (pointsCount + 1);
+
+              for (let i = 1; i <= pointsCount; i++) {
+                const x = minX + step * i;
+                // Only add if not already exists
+                if (!originalData.find((d) => Math.abs(d.x - x) < 0.001)) {
+                  interpolationPoints.push(x);
+                }
+              }
+            }
+
+            // Perform interpolations
+            const newPoints = [];
+            interpolationPoints.forEach((x) => {
+              try {
+                const y = stirlingInterpolation(originalData, x);
+                newPoints.push({ x: x, y: y, interpolated: true });
+              } catch (error) {
+                console.warn(
+                  `Tidak dapat menginterpolasi untuk x=${x}: ${error.message}`
+                );
+              }
+            });
+
+            const allPoints = [
+              ...originalData.map((d) => ({ ...d, interpolated: false })),
+              ...newPoints,
+            ];
+            allPoints.sort((a, b) => a.x - b.x);
+
+            // Display results
+            const output = document.getElementById("graphOutput");
+            output.className = "output";
+            output.innerHTML = `
+            <h3>Hasil Pelengkapan Grafik</h3>
+            <p><strong>Titik Asli:</strong> ${originalData.length}</p>
+            <p><strong>Titik Tambahan:</strong> ${newPoints.length}</p>
+            <p><strong>Total Titik:</strong> ${allPoints.length}</p>
+            <p><strong>Metode:</strong> Interpolasi Stirling</p>
+          `;
+
+            // Update table
+            updateGraphTable(allPoints);
+
+            // Create chart
+            const interpolatedPoints = newPoints.map((p) => ({
+              x: p.x,
+              y: p.y,
+            }));
+            createChart(
+              "graphChart",
+              originalData,
+              interpolatedPoints,
+              "Grafik Lengkap"
+            );
+
+            downloadBtn.disabled = false;
+
+            window.graphResult = {
+              originalData: originalData,
+              newPoints: newPoints,
+              allPoints: allPoints,
+            };
+          } catch (error) {
+            const output = document.getElementById("graphOutput");
+            output.className = "output error";
+            output.textContent = error.message;
+          }
+        });
+
+        function updateGraphTable(data) {
+          const table = document.getElementById("graphTable");
+          const tbody = document.getElementById("graphTableBody");
+
+          tbody.innerHTML = "";
+
+          data.forEach((d) => {
+            const row = tbody.insertRow();
+            row.insertCell(0).textContent = d.x.toFixed(2);
+            row.insertCell(1).textContent = d.y.toFixed(4);
+
+            const statusCell = row.insertCell(2);
+            if (d.interpolated) {
+              statusCell.textContent = "Terinterpolasi";
+              statusCell.className = "interpolated-data";
+            } else {
+              statusCell.textContent = "Data Asli";
+            }
+          });
+
+          table.style.display = "table";
+        }
+
+        resetBtn.addEventListener("click", function () {
+          document.getElementById("graphDataInput").value = "";
+          document.getElementById("graphCsvFile").value = "";
+          document.getElementById("graphPointsInput").value = "5";
+          document.getElementById("graphSpecificPoints").value = "";
+          document.getElementById("graphOutput").textContent =
+            "Hasil pelengkapan grafik akan ditampilkan di sini...";
+          document.getElementById("graphOutput").className = "output";
+          document.getElementById("graphTable").style.display = "none";
+          downloadBtn.disabled = true;
+
+          if (window.graphChart_chart) {
+            window.graphChart_chart.destroy();
+          }
+        });
+
+        downloadBtn.addEventListener("click", function () {
+          if (window.graphResult) {
+            const result = window.graphResult;
+            const content = `Hasil Pelengkapan Grafik - Interpolasi Stirling
+
+Titik Asli: ${result.originalData.length}
+Titik Tambahan: ${result.newPoints.length}
+Total Titik: ${result.allPoints.length}
+Metode: Interpolasi Stirling
+
+Data Lengkap:
+${result.allPoints
+  .map(
+    (d) =>
+      `X: ${d.x.toFixed(2)}, Y: ${d.y.toFixed(4)} ${
+        d.interpolated ? "(Terinterpolasi)" : "(Asli)"
+      }`
+  )
+  .join("\n")}
+
+Timestamp: ${new Date().toLocaleString()}`;
+
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "grafik_lengkap_stirling.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        });
+      }
+    </script>
   </body>
 </html>
-
